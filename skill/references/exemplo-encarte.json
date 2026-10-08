@@ -1,0 +1,206 @@
+{
+  "meta": {
+    "titulo": "Encarte semanal — Loja Exemplo",
+    "objetivo": "Gerar, revisar e entregar o encarte da semana em três formatos: feed, stories e A4 para impressão"
+  },
+  "tarefas": [
+    {
+      "id": "lista",
+      "nome": "Receber lista de ofertas",
+      "descricao": "Ler a planilha de ofertas enviada pela loja, normalizar nomes, preços e unidades e gravar a lista estruturada.",
+      "entradas": ["entrada/ofertas.csv"],
+      "saidas": ["saida/ofertas.json"],
+      "depende_de": [],
+      "escreve": ["saida/ofertas.json"],
+      "le": ["entrada/ofertas.csv"],
+      "criterio_pronto": "saida/ofertas.json tem um item para cada linha de entrada/ofertas.csv, com nome, preço e unidade preenchidos",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json,csv;o=json.load(open('saida/ofertas.json'));n=sum(1 for _ in csv.DictReader(open('entrada/ofertas.csv')));assert len(o)==n and all(i.get('nome') and i.get('preco') and i.get('unidade') for i in o)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 2
+    },
+    {
+      "id": "validar",
+      "nome": "Validar se cada oferta paga",
+      "descricao": "Rodar o simulador de promoção em cada item e marcar as ofertas que dão prejuízo ou ficam abaixo da margem mínima.",
+      "entradas": ["saida/ofertas.json", "entrada/custos.csv"],
+      "saidas": ["saida/validacao.json"],
+      "depende_de": ["lista"],
+      "escreve": ["saida/validacao.json"],
+      "le": ["saida/ofertas.json", "entrada/custos.csv"],
+      "criterio_pronto": "saida/validacao.json tem um veredito (paga / não paga) com a margem calculada para cada oferta de saida/ofertas.json",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json;o=json.load(open('saida/ofertas.json'));v=json.load(open('saida/validacao.json'));assert len(v)==len(o) and all('paga' in i and 'margem' in i for i in v)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 4
+    },
+    {
+      "id": "imagens",
+      "nome": "Buscar imagens dos produtos",
+      "descricao": "Localizar no banco de imagens da loja, ou no site do fornecedor, uma foto para cada produto da lista.",
+      "entradas": ["saida/ofertas.json", "entrada/banco-imagens/"],
+      "saidas": ["saida/imagens-brutas/"],
+      "depende_de": ["lista"],
+      "escreve": ["saida/imagens-brutas/"],
+      "le": ["saida/ofertas.json", "entrada/banco-imagens/"],
+      "criterio_pronto": "existe pelo menos uma imagem em saida/imagens-brutas/ para cada oferta de saida/ofertas.json",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json,os;o=json.load(open('saida/ofertas.json'));assert len(os.listdir('saida/imagens-brutas'))>=len(o)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 5
+    },
+    {
+      "id": "layout",
+      "nome": "Definir tema e layout",
+      "descricao": "Escolher o tema da semana, a paleta e a grade de posições dos produtos a partir do brand kit da loja.",
+      "entradas": ["saida/ofertas.json", "entrada/brand-kit/"],
+      "saidas": ["saida/layout.json"],
+      "depende_de": ["lista"],
+      "escreve": ["saida/layout.json"],
+      "le": ["saida/ofertas.json", "entrada/brand-kit/"],
+      "criterio_pronto": "saida/layout.json define tema, paleta e uma posição na grade para cada oferta",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json;l=json.load(open('saida/layout.json'));o=json.load(open('saida/ofertas.json'));assert l.get('tema') and l.get('paleta') and len(l.get('grade',[]))>=len(o)\""
+      },
+      "modelo": "sonnet",
+      "estimativa_min": 4
+    },
+    {
+      "id": "textos",
+      "nome": "Escrever chamadas das ofertas",
+      "descricao": "Escrever o título do encarte e uma chamada curta para cada oferta, no tom de voz da loja.",
+      "entradas": ["saida/ofertas.json", "entrada/brand-kit/tom-de-voz.md"],
+      "saidas": ["saida/textos.json"],
+      "depende_de": ["lista"],
+      "escreve": ["saida/textos.json"],
+      "le": ["saida/ofertas.json", "entrada/brand-kit/tom-de-voz.md"],
+      "criterio_pronto": "cada oferta tem uma chamada de até 40 caracteres, sem erro de português e coerente com o produto e o tom da loja",
+      "verificacao": { "tipo": "juiz" },
+      "modelo": "sonnet",
+      "estimativa_min": 3
+    },
+    {
+      "id": "tratar-fotos",
+      "nome": "Remover fundo e padronizar fotos",
+      "descricao": "Remover o fundo, recortar e padronizar tamanho e iluminação de cada foto bruta.",
+      "entradas": ["saida/imagens-brutas/"],
+      "saidas": ["saida/fotos/"],
+      "depende_de": ["imagens"],
+      "escreve": ["saida/fotos/*.png"],
+      "le": ["saida/imagens-brutas/"],
+      "criterio_pronto": "cada oferta tem um PNG com fundo transparente em saida/fotos/, com pelo menos 800 px no maior lado",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json,glob;o=json.load(open('saida/ofertas.json'));assert len(glob.glob('saida/fotos/*.png'))>=len(o)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 6
+    },
+    {
+      "id": "montar",
+      "nome": "Montar o encarte",
+      "descricao": "Compor o encarte em HTML com o layout, as fotos tratadas, os textos e apenas as ofertas aprovadas na validação.",
+      "entradas": ["saida/validacao.json", "saida/fotos/", "saida/layout.json", "saida/textos.json"],
+      "saidas": ["saida/encarte.html", "saida/encarte.css"],
+      "depende_de": ["validar", "tratar-fotos", "layout", "textos"],
+      "escreve": ["saida/encarte.html", "saida/encarte.css"],
+      "le": ["saida/validacao.json", "saida/fotos/", "saida/layout.json", "saida/textos.json"],
+      "criterio_pronto": "saida/encarte.html abre sem erro e contém todas as ofertas aprovadas, cada uma com preço e foto",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json;v=json.load(open('saida/validacao.json'));h=open('saida/encarte.html').read();assert all(i['nome'] in h for i in v if i.get('paga'))\""
+      },
+      "modelo": "sonnet",
+      "estimativa_min": 8
+    },
+    {
+      "id": "revisar",
+      "nome": "Revisão final de preços e textos",
+      "descricao": "Conferir item a item preço, unidade, validade e texto do encarte contra a lista original e a validação.",
+      "entradas": ["saida/encarte.html", "saida/ofertas.json", "saida/validacao.json"],
+      "saidas": ["saida/revisao.md"],
+      "depende_de": ["montar"],
+      "escreve": ["saida/revisao.md"],
+      "le": ["saida/encarte.html", "saida/encarte.css", "saida/ofertas.json", "saida/validacao.json"],
+      "criterio_pronto": "nenhuma divergência de preço, unidade ou texto entre o encarte e a lista; saida/revisao.md registra a conferência de cada item",
+      "verificacao": { "tipo": "juiz" },
+      "modelo": "opus",
+      "estimativa_min": 5
+    },
+    {
+      "id": "render-feed",
+      "nome": "Renderizar post do feed",
+      "descricao": "Exportar o encarte revisado em PNG 1080×1350 para o feed do Instagram.",
+      "entradas": ["saida/encarte.html"],
+      "saidas": ["saida/feed/encarte.png"],
+      "depende_de": ["revisar"],
+      "escreve": ["saida/feed/*.png"],
+      "le": ["saida/encarte.html", "saida/encarte.css"],
+      "criterio_pronto": "saida/feed/encarte.png existe e tem exatamente 1080×1350 px",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import struct;b=open('saida/feed/encarte.png','rb').read(24);assert struct.unpack('>II',b[16:24])==(1080,1350)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 3
+    },
+    {
+      "id": "render-stories",
+      "nome": "Renderizar story",
+      "descricao": "Exportar o encarte revisado em PNG 1080×1920 para stories, com a área segura respeitada.",
+      "entradas": ["saida/encarte.html"],
+      "saidas": ["saida/stories/encarte.png"],
+      "depende_de": ["revisar"],
+      "escreve": ["saida/stories/*.png"],
+      "le": ["saida/encarte.html", "saida/encarte.css"],
+      "criterio_pronto": "saida/stories/encarte.png existe e tem exatamente 1080×1920 px",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import struct;b=open('saida/stories/encarte.png','rb').read(24);assert struct.unpack('>II',b[16:24])==(1080,1920)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 3
+    },
+    {
+      "id": "render-a4",
+      "nome": "Gerar PDF A4 para impressão",
+      "descricao": "Exportar o encarte revisado em PDF A4 (210×297 mm) com 3 mm de sangria para a gráfica.",
+      "entradas": ["saida/encarte.html"],
+      "saidas": ["saida/impressao/encarte-a4.pdf"],
+      "depende_de": ["revisar"],
+      "escreve": ["saida/impressao/encarte-a4.pdf"],
+      "le": ["saida/encarte.html", "saida/encarte.css"],
+      "criterio_pronto": "saida/impressao/encarte-a4.pdf é um PDF de uma página A4 com 3 mm de sangria",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"d=open('saida/impressao/encarte-a4.pdf','rb').read();assert d.startswith(b'%PDF') and b'/MediaBox' in d\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 4
+    },
+    {
+      "id": "entregar",
+      "nome": "Empacotar e entregar",
+      "descricao": "Juntar os três formatos num zip com um LEIA-ME que informa a validade das ofertas e onde usar cada arquivo.",
+      "entradas": ["saida/feed/", "saida/stories/", "saida/impressao/"],
+      "saidas": ["saida/entrega/encarte-semana.zip", "saida/entrega/LEIA-ME.md"],
+      "depende_de": ["render-feed", "render-stories", "render-a4"],
+      "escreve": ["saida/entrega/encarte-semana.zip", "saida/entrega/LEIA-ME.md"],
+      "le": ["saida/feed/", "saida/stories/", "saida/impressao/", "saida/ofertas.json"],
+      "criterio_pronto": "o zip contém os três formatos e o LEIA-ME informa a validade das ofertas",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import zipfile;n=zipfile.ZipFile('saida/entrega/encarte-semana.zip').namelist();assert any(x.endswith('.pdf') for x in n) and sum(x.endswith('.png') for x in n)>=2\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 2
+    }
+  ]
+}

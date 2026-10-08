@@ -1,0 +1,7 @@
+# Execuções reais do DAG ficam fora do repositório; a demonstração entra.
+.dag/
+!demo/.dag/
+
+__pycache__/
+*.pyc
+.DS_Store

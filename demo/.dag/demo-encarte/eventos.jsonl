@@ -1,0 +1,45 @@
+{"ts": "2026-10-08T15:43:08-03:00", "tipo": "init", "versao": 0, "msg": "Execução 'demo-encarte' criada (autonomo, até 4 em paralelo)."}
+{"ts": "2026-10-08T15:43:08-03:00", "tipo": "plano_carregado", "versao": 1, "msg": "Plano v1 carregado: 12 tarefas em 7 níveis. Caminho crítico: lista → imagens → tratar-fotos → montar → revisar → render-a4 → entregar."}
+{"ts": "2026-10-08T15:43:08-03:00", "tipo": "status", "tarefa": "lista", "de": "pendente", "para": "pronta", "versao": 1, "msg": "lista → pronta"}
+{"ts": "2026-10-08T15:43:08-03:00", "tipo": "aprovado", "versao": 1, "msg": "Plano v1 aprovado automaticamente (modo autônomo)."}
+{"ts": "2026-10-08T15:43:08-03:00", "tipo": "status", "tarefa": "lista", "de": "pronta", "para": "executando", "agente": "sub-01", "versao": 1, "msg": "lista → executando (sub-01)"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "lista", "de": "executando", "para": "concluida", "agente": "sub-01", "tokens": 12943, "versao": 1, "msg": "lista → concluída (sub-01)"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "validar", "de": "pendente", "para": "pronta", "versao": 1, "msg": "validar → pronta"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "imagens", "de": "pendente", "para": "pronta", "versao": 1, "msg": "imagens → pronta"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "layout", "de": "pendente", "para": "pronta", "versao": 1, "msg": "layout → pronta"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "textos", "de": "pendente", "para": "pronta", "versao": 1, "msg": "textos → pronta"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "imagens", "de": "pronta", "para": "executando", "agente": "sub-02", "versao": 1, "msg": "imagens → executando (sub-02)"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "validar", "de": "pronta", "para": "executando", "agente": "sub-03", "versao": 1, "msg": "validar → executando (sub-03)"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "layout", "de": "pronta", "para": "executando", "agente": "sub-04", "versao": 1, "msg": "layout → executando (sub-04)"}
+{"ts": "2026-10-08T15:43:11-03:00", "tipo": "status", "tarefa": "textos", "de": "pronta", "para": "executando", "agente": "sub-05", "versao": 1, "msg": "textos → executando (sub-05)"}
+{"ts": "2026-10-08T15:43:13-03:00", "tipo": "status", "tarefa": "validar", "de": "executando", "para": "concluida", "agente": "sub-03", "tokens": 9900, "versao": 1, "msg": "validar → concluída (sub-03)"}
+{"ts": "2026-10-08T15:43:14-03:00", "tipo": "status", "tarefa": "textos", "de": "executando", "para": "concluida", "agente": "sub-05", "tokens": 25733, "versao": 1, "msg": "textos → concluída (sub-05)"}
+{"ts": "2026-10-08T15:43:14-03:00", "tipo": "status", "tarefa": "layout", "de": "executando", "para": "concluida", "agente": "sub-04", "tokens": 47405, "versao": 1, "msg": "layout → concluída (sub-04)"}
+{"ts": "2026-10-08T15:43:15-03:00", "tipo": "status", "tarefa": "imagens", "de": "executando", "para": "concluida", "agente": "sub-02", "tokens": 15886, "versao": 1, "msg": "imagens → concluída (sub-02)"}
+{"ts": "2026-10-08T15:43:15-03:00", "tipo": "status", "tarefa": "tratar-fotos", "de": "pendente", "para": "pronta", "versao": 1, "msg": "tratar-fotos → pronta"}
+{"ts": "2026-10-08T15:43:15-03:00", "tipo": "status", "tarefa": "tratar-fotos", "de": "pronta", "para": "executando", "agente": "sub-06", "versao": 1, "msg": "tratar-fotos → executando (sub-06)"}
+{"ts": "2026-10-08T15:43:18-03:00", "tipo": "status", "tarefa": "tratar-fotos", "de": "executando", "para": "concluida", "agente": "sub-06", "tokens": 9936, "versao": 1, "msg": "tratar-fotos → concluída (sub-06)"}
+{"ts": "2026-10-08T15:43:18-03:00", "tipo": "status", "tarefa": "montar", "de": "pendente", "para": "pronta", "versao": 1, "msg": "montar → pronta"}
+{"ts": "2026-10-08T15:43:18-03:00", "tipo": "status", "tarefa": "montar", "de": "pronta", "para": "executando", "agente": "sub-07", "versao": 1, "msg": "montar → executando (sub-07)"}
+{"ts": "2026-10-08T15:43:22-03:00", "tipo": "status", "tarefa": "montar", "de": "executando", "para": "reprovada", "agente": "sub-07", "motivo": "preço do item 3 diverge da lista", "tokens": 62070, "versao": 1, "msg": "montar → reprovada (sub-07): preço do item 3 diverge da lista"}
+{"ts": "2026-10-08T15:43:23-03:00", "tipo": "status", "tarefa": "montar", "de": "reprovada", "para": "pronta", "motivo": "preço do item 3 diverge da lista", "versao": 1, "msg": "montar → pronta: volta à fila (tentativa 2 de 2)"}
+{"ts": "2026-10-08T15:43:23-03:00", "tipo": "status", "tarefa": "montar", "de": "pronta", "para": "executando", "agente": "sub-08", "versao": 1, "msg": "montar → executando (sub-08): tentativa 2"}
+{"ts": "2026-10-08T15:43:26-03:00", "tipo": "status", "tarefa": "montar", "de": "executando", "para": "concluida", "agente": "sub-08", "tokens": 24939, "versao": 1, "msg": "montar → concluída (sub-08)"}
+{"ts": "2026-10-08T15:43:26-03:00", "tipo": "status", "tarefa": "revisar", "de": "pendente", "para": "pronta", "versao": 1, "msg": "revisar → pronta"}
+{"ts": "2026-10-08T15:43:26-03:00", "tipo": "status", "tarefa": "revisar", "de": "pronta", "para": "executando", "agente": "sub-09", "versao": 1, "msg": "revisar → executando (sub-09)"}
+{"ts": "2026-10-08T15:43:29-03:00", "tipo": "status", "tarefa": "revisar", "de": "executando", "para": "concluida", "agente": "sub-09", "tokens": 60671, "versao": 1, "msg": "revisar → concluída (sub-09)"}
+{"ts": "2026-10-08T15:43:29-03:00", "tipo": "status", "tarefa": "render-feed", "de": "pendente", "para": "pronta", "versao": 1, "msg": "render-feed → pronta"}
+{"ts": "2026-10-08T15:43:29-03:00", "tipo": "status", "tarefa": "render-stories", "de": "pendente", "para": "pronta", "versao": 1, "msg": "render-stories → pronta"}
+{"ts": "2026-10-08T15:43:29-03:00", "tipo": "status", "tarefa": "render-a4", "de": "pendente", "para": "pronta", "versao": 1, "msg": "render-a4 → pronta"}
+{"ts": "2026-10-08T15:43:29-03:00", "tipo": "status", "tarefa": "render-a4", "de": "pronta", "para": "executando", "agente": "sub-10", "versao": 1, "msg": "render-a4 → executando (sub-10)"}
+{"ts": "2026-10-08T15:43:29-03:00", "tipo": "status", "tarefa": "render-feed", "de": "pronta", "para": "executando", "agente": "sub-11", "versao": 1, "msg": "render-feed → executando (sub-11)"}
+{"ts": "2026-10-08T15:43:29-03:00", "tipo": "status", "tarefa": "render-stories", "de": "pronta", "para": "executando", "agente": "sub-12", "versao": 1, "msg": "render-stories → executando (sub-12)"}
+{"ts": "2026-10-08T15:43:31-03:00", "tipo": "status", "tarefa": "render-a4", "de": "executando", "para": "reprovada", "agente": "sub-10", "motivo": "PDF saiu em formato Carta, não A4", "tokens": 13922, "versao": 1, "msg": "render-a4 → reprovada (sub-10): PDF saiu em formato Carta, não A4"}
+{"ts": "2026-10-08T15:43:31-03:00", "tipo": "status", "tarefa": "render-a4", "de": "reprovada", "para": "pronta", "motivo": "PDF saiu em formato Carta, não A4", "versao": 1, "msg": "render-a4 → pronta: volta à fila (tentativa 2 de 2)"}
+{"ts": "2026-10-08T15:43:31-03:00", "tipo": "status", "tarefa": "render-a4", "de": "pronta", "para": "executando", "agente": "sub-13", "versao": 1, "msg": "render-a4 → executando (sub-13): tentativa 2"}
+{"ts": "2026-10-08T15:43:31-03:00", "tipo": "status", "tarefa": "render-feed", "de": "executando", "para": "concluida", "agente": "sub-11", "tokens": 14156, "versao": 1, "msg": "render-feed → concluída (sub-11)"}
+{"ts": "2026-10-08T15:43:32-03:00", "tipo": "status", "tarefa": "render-stories", "de": "executando", "para": "concluida", "agente": "sub-12", "tokens": 11192, "versao": 1, "msg": "render-stories → concluída (sub-12)"}
+{"ts": "2026-10-08T15:43:34-03:00", "tipo": "status", "tarefa": "render-a4", "de": "executando", "para": "reprovada", "agente": "sub-13", "motivo": "sangria ausente na segunda tentativa", "tokens": 9953, "versao": 1, "msg": "render-a4 → reprovada (sub-13): sangria ausente na segunda tentativa"}
+{"ts": "2026-10-08T15:43:34-03:00", "tipo": "status", "tarefa": "render-a4", "de": "reprovada", "para": "falhou", "motivo": "sangria ausente na segunda tentativa", "versao": 1, "msg": "render-a4 → falhou: tentativas esgotadas (2 de 2)"}
+{"ts": "2026-10-08T15:43:34-03:00", "tipo": "status", "tarefa": "entregar", "de": "pendente", "para": "bloqueada", "versao": 1, "msg": "entregar → bloqueada: depende de render-a4"}
+{"ts": "2026-10-08T15:43:35-03:00", "tipo": "encerrado", "versao": 1, "msg": "Execução encerrada: 10/12 concluídas, 1 falha(s), 1 bloqueada(s)."}

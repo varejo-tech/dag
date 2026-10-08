@@ -1,0 +1,774 @@
+{
+  "meta": {
+    "id": "demo-encarte",
+    "titulo": "Encarte semanal — Loja Exemplo (simulação)",
+    "objetivo": "Gerar, revisar e entregar o encarte da semana em três formatos: feed, stories e A4 para impressão",
+    "versao": 1,
+    "estado": "encerrado",
+    "modo": "autonomo",
+    "max_paralelo": 4,
+    "max_tentativas": 2,
+    "criado_em": "2026-10-08T15:43:08-03:00",
+    "atualizado_em": "2026-10-08T15:43:35-03:00",
+    "aprovado_em": "2026-10-08T15:43:08-03:00",
+    "aprovacao": "automatica",
+    "iniciado_em": "2026-10-08T15:43:08-03:00",
+    "encerrado_em": "2026-10-08T15:43:35-03:00",
+    "caminho_critico": [
+      "lista",
+      "imagens",
+      "tratar-fotos",
+      "montar",
+      "revisar",
+      "render-a4",
+      "entregar"
+    ],
+    "total_niveis": 7,
+    "pico_paralelo": 4,
+    "contador_agentes": 13
+  },
+  "tarefas": [
+    {
+      "id": "lista",
+      "nome": "Receber lista de ofertas",
+      "descricao": "Ler a planilha de ofertas enviada pela loja, normalizar nomes, preços e unidades e gravar a lista estruturada.",
+      "entradas": [
+        "entrada/ofertas.csv"
+      ],
+      "saidas": [
+        "saida/ofertas.json"
+      ],
+      "depende_de": [],
+      "escreve": [
+        "saida/ofertas.json"
+      ],
+      "le": [
+        "entrada/ofertas.csv"
+      ],
+      "criterio_pronto": "saida/ofertas.json tem um item para cada linha de entrada/ofertas.csv, com nome, preço e unidade preenchidos",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json,csv;o=json.load(open('saida/ofertas.json'));n=sum(1 for _ in csv.DictReader(open('entrada/ofertas.csv')));assert len(o)==n and all(i.get('nome') and i.get('preco') and i.get('unidade') for i in o)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 2,
+      "nivel": 0,
+      "status": "concluida",
+      "agente": "sub-01",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:08-03:00",
+      "fim": "2026-10-08T15:43:11-03:00",
+      "resumo_resultado": "(simulação) Receber lista de ofertas concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/ofertas.json"
+      ],
+      "tokens": 12943,
+      "tool_uses": 9,
+      "duracao_ms": 2197,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-01",
+          "modelo": "haiku",
+          "inicio": "2026-10-08T15:43:08-03:00",
+          "fim": "2026-10-08T15:43:11-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 12943,
+          "tool_uses": 9,
+          "duracao_ms": 2197,
+          "juiz": null,
+          "resumo": "(simulação) Receber lista de ofertas concluída"
+        }
+      ]
+    },
+    {
+      "id": "validar",
+      "nome": "Validar se cada oferta paga",
+      "descricao": "Rodar o simulador de promoção em cada item e marcar as ofertas que dão prejuízo ou ficam abaixo da margem mínima.",
+      "entradas": [
+        "saida/ofertas.json",
+        "entrada/custos.csv"
+      ],
+      "saidas": [
+        "saida/validacao.json"
+      ],
+      "depende_de": [
+        "lista"
+      ],
+      "escreve": [
+        "saida/validacao.json"
+      ],
+      "le": [
+        "saida/ofertas.json",
+        "entrada/custos.csv"
+      ],
+      "criterio_pronto": "saida/validacao.json tem um veredito (paga / não paga) com a margem calculada para cada oferta de saida/ofertas.json",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json;o=json.load(open('saida/ofertas.json'));v=json.load(open('saida/validacao.json'));assert len(v)==len(o) and all('paga' in i and 'margem' in i for i in v)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 4,
+      "nivel": 1,
+      "status": "concluida",
+      "agente": "sub-03",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:11-03:00",
+      "fim": "2026-10-08T15:43:13-03:00",
+      "resumo_resultado": "(simulação) Validar se cada oferta paga concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/validacao.json"
+      ],
+      "tokens": 9900,
+      "tool_uses": 6,
+      "duracao_ms": 1527,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-03",
+          "modelo": "haiku",
+          "inicio": "2026-10-08T15:43:11-03:00",
+          "fim": "2026-10-08T15:43:13-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 9900,
+          "tool_uses": 6,
+          "duracao_ms": 1527,
+          "juiz": null,
+          "resumo": "(simulação) Validar se cada oferta paga concluída"
+        }
+      ]
+    },
+    {
+      "id": "imagens",
+      "nome": "Buscar imagens dos produtos",
+      "descricao": "Localizar no banco de imagens da loja, ou no site do fornecedor, uma foto para cada produto da lista.",
+      "entradas": [
+        "saida/ofertas.json",
+        "entrada/banco-imagens/"
+      ],
+      "saidas": [
+        "saida/imagens-brutas/"
+      ],
+      "depende_de": [
+        "lista"
+      ],
+      "escreve": [
+        "saida/imagens-brutas/"
+      ],
+      "le": [
+        "saida/ofertas.json",
+        "entrada/banco-imagens/"
+      ],
+      "criterio_pronto": "existe pelo menos uma imagem em saida/imagens-brutas/ para cada oferta de saida/ofertas.json",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json,os;o=json.load(open('saida/ofertas.json'));assert len(os.listdir('saida/imagens-brutas'))>=len(o)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 5,
+      "nivel": 1,
+      "status": "concluida",
+      "agente": "sub-02",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:11-03:00",
+      "fim": "2026-10-08T15:43:15-03:00",
+      "resumo_resultado": "(simulação) Buscar imagens dos produtos concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/imagens-brutas/exemplo"
+      ],
+      "tokens": 15886,
+      "tool_uses": 4,
+      "duracao_ms": 3390,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-02",
+          "modelo": "haiku",
+          "inicio": "2026-10-08T15:43:11-03:00",
+          "fim": "2026-10-08T15:43:15-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 15886,
+          "tool_uses": 4,
+          "duracao_ms": 3390,
+          "juiz": null,
+          "resumo": "(simulação) Buscar imagens dos produtos concluída"
+        }
+      ]
+    },
+    {
+      "id": "layout",
+      "nome": "Definir tema e layout",
+      "descricao": "Escolher o tema da semana, a paleta e a grade de posições dos produtos a partir do brand kit da loja.",
+      "entradas": [
+        "saida/ofertas.json",
+        "entrada/brand-kit/"
+      ],
+      "saidas": [
+        "saida/layout.json"
+      ],
+      "depende_de": [
+        "lista"
+      ],
+      "escreve": [
+        "saida/layout.json"
+      ],
+      "le": [
+        "saida/ofertas.json",
+        "entrada/brand-kit/"
+      ],
+      "criterio_pronto": "saida/layout.json define tema, paleta e uma posição na grade para cada oferta",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json;l=json.load(open('saida/layout.json'));o=json.load(open('saida/ofertas.json'));assert l.get('tema') and l.get('paleta') and len(l.get('grade',[]))>=len(o)\""
+      },
+      "modelo": "sonnet",
+      "estimativa_min": 4,
+      "nivel": 1,
+      "status": "concluida",
+      "agente": "sub-04",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:11-03:00",
+      "fim": "2026-10-08T15:43:14-03:00",
+      "resumo_resultado": "(simulação) Definir tema e layout concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/layout.json"
+      ],
+      "tokens": 47405,
+      "tool_uses": 7,
+      "duracao_ms": 2764,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-04",
+          "modelo": "sonnet",
+          "inicio": "2026-10-08T15:43:11-03:00",
+          "fim": "2026-10-08T15:43:14-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 47405,
+          "tool_uses": 7,
+          "duracao_ms": 2764,
+          "juiz": null,
+          "resumo": "(simulação) Definir tema e layout concluída"
+        }
+      ]
+    },
+    {
+      "id": "textos",
+      "nome": "Escrever chamadas das ofertas",
+      "descricao": "Escrever o título do encarte e uma chamada curta para cada oferta, no tom de voz da loja.",
+      "entradas": [
+        "saida/ofertas.json",
+        "entrada/brand-kit/tom-de-voz.md"
+      ],
+      "saidas": [
+        "saida/textos.json"
+      ],
+      "depende_de": [
+        "lista"
+      ],
+      "escreve": [
+        "saida/textos.json"
+      ],
+      "le": [
+        "saida/ofertas.json",
+        "entrada/brand-kit/tom-de-voz.md"
+      ],
+      "criterio_pronto": "cada oferta tem uma chamada de até 40 caracteres, sem erro de português e coerente com o produto e o tom da loja",
+      "verificacao": {
+        "tipo": "juiz"
+      },
+      "modelo": "sonnet",
+      "estimativa_min": 3,
+      "nivel": 1,
+      "status": "concluida",
+      "agente": "sub-05",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:11-03:00",
+      "fim": "2026-10-08T15:43:14-03:00",
+      "resumo_resultado": "(simulação) Escrever chamadas das ofertas concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/textos.json"
+      ],
+      "tokens": 25733,
+      "tool_uses": 7,
+      "duracao_ms": 2309,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-05",
+          "modelo": "sonnet",
+          "inicio": "2026-10-08T15:43:11-03:00",
+          "fim": "2026-10-08T15:43:14-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 22457,
+          "tool_uses": 7,
+          "duracao_ms": 2309,
+          "juiz": {
+            "agente": "juiz-01",
+            "veredito": "atende",
+            "tokens": 3276
+          },
+          "resumo": "(simulação) Escrever chamadas das ofertas concluída"
+        }
+      ]
+    },
+    {
+      "id": "tratar-fotos",
+      "nome": "Remover fundo e padronizar fotos",
+      "descricao": "Remover o fundo, recortar e padronizar tamanho e iluminação de cada foto bruta.",
+      "entradas": [
+        "saida/imagens-brutas/"
+      ],
+      "saidas": [
+        "saida/fotos/"
+      ],
+      "depende_de": [
+        "imagens"
+      ],
+      "escreve": [
+        "saida/fotos/*.png"
+      ],
+      "le": [
+        "saida/imagens-brutas/"
+      ],
+      "criterio_pronto": "cada oferta tem um PNG com fundo transparente em saida/fotos/, com pelo menos 800 px no maior lado",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json,glob;o=json.load(open('saida/ofertas.json'));assert len(glob.glob('saida/fotos/*.png'))>=len(o)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 6,
+      "nivel": 2,
+      "status": "concluida",
+      "agente": "sub-06",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:15-03:00",
+      "fim": "2026-10-08T15:43:18-03:00",
+      "resumo_resultado": "(simulação) Remover fundo e padronizar fotos concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/fotos/exemplo.png"
+      ],
+      "tokens": 9936,
+      "tool_uses": 4,
+      "duracao_ms": 2807,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-06",
+          "modelo": "haiku",
+          "inicio": "2026-10-08T15:43:15-03:00",
+          "fim": "2026-10-08T15:43:18-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 9936,
+          "tool_uses": 4,
+          "duracao_ms": 2807,
+          "juiz": null,
+          "resumo": "(simulação) Remover fundo e padronizar fotos concluída"
+        }
+      ]
+    },
+    {
+      "id": "montar",
+      "nome": "Montar o encarte",
+      "descricao": "Compor o encarte em HTML com o layout, as fotos tratadas, os textos e apenas as ofertas aprovadas na validação.",
+      "entradas": [
+        "saida/validacao.json",
+        "saida/fotos/",
+        "saida/layout.json",
+        "saida/textos.json"
+      ],
+      "saidas": [
+        "saida/encarte.html",
+        "saida/encarte.css"
+      ],
+      "depende_de": [
+        "validar",
+        "tratar-fotos",
+        "layout",
+        "textos"
+      ],
+      "escreve": [
+        "saida/encarte.html",
+        "saida/encarte.css"
+      ],
+      "le": [
+        "saida/validacao.json",
+        "saida/fotos/",
+        "saida/layout.json",
+        "saida/textos.json"
+      ],
+      "criterio_pronto": "saida/encarte.html abre sem erro e contém todas as ofertas aprovadas, cada uma com preço e foto",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import json;v=json.load(open('saida/validacao.json'));h=open('saida/encarte.html').read();assert all(i['nome'] in h for i in v if i.get('paga'))\""
+      },
+      "modelo": "sonnet",
+      "estimativa_min": 8,
+      "nivel": 3,
+      "status": "concluida",
+      "agente": "sub-08",
+      "tentativas": 2,
+      "inicio": "2026-10-08T15:43:18-03:00",
+      "fim": "2026-10-08T15:43:26-03:00",
+      "resumo_resultado": "(simulação) Montar o encarte concluída",
+      "motivo_reprovacao": "preço do item 3 diverge da lista",
+      "arquivos_alterados": [
+        "saida/encarte.html",
+        "saida/encarte.css"
+      ],
+      "tokens": 87009,
+      "tool_uses": 15,
+      "duracao_ms": 6758,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-07",
+          "modelo": "sonnet",
+          "inicio": "2026-10-08T15:43:18-03:00",
+          "fim": "2026-10-08T15:43:22-03:00",
+          "resultado": "reprovada",
+          "motivo": "preço do item 3 diverge da lista",
+          "tokens": 58207,
+          "tool_uses": 6,
+          "duracao_ms": 3863,
+          "juiz": {
+            "agente": "juiz-02",
+            "veredito": "nao_atende",
+            "tokens": 3863
+          },
+          "resumo": null
+        },
+        {
+          "tentativa": 2,
+          "agente": "sub-08",
+          "modelo": "sonnet",
+          "inicio": "2026-10-08T15:43:23-03:00",
+          "fim": "2026-10-08T15:43:26-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 23249,
+          "tool_uses": 9,
+          "duracao_ms": 2895,
+          "juiz": {
+            "agente": "juiz-03",
+            "veredito": "atende",
+            "tokens": 1690
+          },
+          "resumo": "(simulação) Montar o encarte concluída"
+        }
+      ]
+    },
+    {
+      "id": "revisar",
+      "nome": "Revisão final de preços e textos",
+      "descricao": "Conferir item a item preço, unidade, validade e texto do encarte contra a lista original e a validação.",
+      "entradas": [
+        "saida/encarte.html",
+        "saida/ofertas.json",
+        "saida/validacao.json"
+      ],
+      "saidas": [
+        "saida/revisao.md"
+      ],
+      "depende_de": [
+        "montar"
+      ],
+      "escreve": [
+        "saida/revisao.md"
+      ],
+      "le": [
+        "saida/encarte.html",
+        "saida/encarte.css",
+        "saida/ofertas.json",
+        "saida/validacao.json"
+      ],
+      "criterio_pronto": "nenhuma divergência de preço, unidade ou texto entre o encarte e a lista; saida/revisao.md registra a conferência de cada item",
+      "verificacao": {
+        "tipo": "juiz"
+      },
+      "modelo": "opus",
+      "estimativa_min": 5,
+      "nivel": 4,
+      "status": "concluida",
+      "agente": "sub-09",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:26-03:00",
+      "fim": "2026-10-08T15:43:29-03:00",
+      "resumo_resultado": "(simulação) Revisão final de preços e textos concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/revisao.md"
+      ],
+      "tokens": 60671,
+      "tool_uses": 17,
+      "duracao_ms": 2821,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-09",
+          "modelo": "opus",
+          "inicio": "2026-10-08T15:43:26-03:00",
+          "fim": "2026-10-08T15:43:29-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 57455,
+          "tool_uses": 17,
+          "duracao_ms": 2821,
+          "juiz": {
+            "agente": "juiz-04",
+            "veredito": "atende",
+            "tokens": 3216
+          },
+          "resumo": "(simulação) Revisão final de preços e textos concluída"
+        }
+      ]
+    },
+    {
+      "id": "render-feed",
+      "nome": "Renderizar post do feed",
+      "descricao": "Exportar o encarte revisado em PNG 1080×1350 para o feed do Instagram.",
+      "entradas": [
+        "saida/encarte.html"
+      ],
+      "saidas": [
+        "saida/feed/encarte.png"
+      ],
+      "depende_de": [
+        "revisar"
+      ],
+      "escreve": [
+        "saida/feed/*.png"
+      ],
+      "le": [
+        "saida/encarte.html",
+        "saida/encarte.css"
+      ],
+      "criterio_pronto": "saida/feed/encarte.png existe e tem exatamente 1080×1350 px",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import struct;b=open('saida/feed/encarte.png','rb').read(24);assert struct.unpack('>II',b[16:24])==(1080,1350)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 3,
+      "nivel": 5,
+      "status": "concluida",
+      "agente": "sub-11",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:29-03:00",
+      "fim": "2026-10-08T15:43:31-03:00",
+      "resumo_resultado": "(simulação) Renderizar post do feed concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/feed/exemplo.png"
+      ],
+      "tokens": 14156,
+      "tool_uses": 8,
+      "duracao_ms": 2007,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-11",
+          "modelo": "haiku",
+          "inicio": "2026-10-08T15:43:29-03:00",
+          "fim": "2026-10-08T15:43:31-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 14156,
+          "tool_uses": 8,
+          "duracao_ms": 2007,
+          "juiz": null,
+          "resumo": "(simulação) Renderizar post do feed concluída"
+        }
+      ]
+    },
+    {
+      "id": "render-stories",
+      "nome": "Renderizar story",
+      "descricao": "Exportar o encarte revisado em PNG 1080×1920 para stories, com a área segura respeitada.",
+      "entradas": [
+        "saida/encarte.html"
+      ],
+      "saidas": [
+        "saida/stories/encarte.png"
+      ],
+      "depende_de": [
+        "revisar"
+      ],
+      "escreve": [
+        "saida/stories/*.png"
+      ],
+      "le": [
+        "saida/encarte.html",
+        "saida/encarte.css"
+      ],
+      "criterio_pronto": "saida/stories/encarte.png existe e tem exatamente 1080×1920 px",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import struct;b=open('saida/stories/encarte.png','rb').read(24);assert struct.unpack('>II',b[16:24])==(1080,1920)\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 3,
+      "nivel": 5,
+      "status": "concluida",
+      "agente": "sub-12",
+      "tentativas": 1,
+      "inicio": "2026-10-08T15:43:29-03:00",
+      "fim": "2026-10-08T15:43:32-03:00",
+      "resumo_resultado": "(simulação) Renderizar story concluída",
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [
+        "saida/stories/exemplo.png"
+      ],
+      "tokens": 11192,
+      "tool_uses": 4,
+      "duracao_ms": 2180,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-12",
+          "modelo": "haiku",
+          "inicio": "2026-10-08T15:43:29-03:00",
+          "fim": "2026-10-08T15:43:32-03:00",
+          "resultado": "concluida",
+          "motivo": null,
+          "tokens": 11192,
+          "tool_uses": 4,
+          "duracao_ms": 2180,
+          "juiz": null,
+          "resumo": "(simulação) Renderizar story concluída"
+        }
+      ]
+    },
+    {
+      "id": "render-a4",
+      "nome": "Gerar PDF A4 para impressão",
+      "descricao": "Exportar o encarte revisado em PDF A4 (210×297 mm) com 3 mm de sangria para a gráfica.",
+      "entradas": [
+        "saida/encarte.html"
+      ],
+      "saidas": [
+        "saida/impressao/encarte-a4.pdf"
+      ],
+      "depende_de": [
+        "revisar"
+      ],
+      "escreve": [
+        "saida/impressao/encarte-a4.pdf"
+      ],
+      "le": [
+        "saida/encarte.html",
+        "saida/encarte.css"
+      ],
+      "criterio_pronto": "saida/impressao/encarte-a4.pdf é um PDF de uma página A4 com 3 mm de sangria",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"d=open('saida/impressao/encarte-a4.pdf','rb').read();assert d.startswith(b'%PDF') and b'/MediaBox' in d\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 4,
+      "nivel": 5,
+      "status": "falhou",
+      "agente": "sub-13",
+      "tentativas": 2,
+      "inicio": "2026-10-08T15:43:29-03:00",
+      "fim": "2026-10-08T15:43:34-03:00",
+      "resumo_resultado": null,
+      "motivo_reprovacao": "sangria ausente na segunda tentativa",
+      "arquivos_alterados": [],
+      "tokens": 23875,
+      "tool_uses": 10,
+      "duracao_ms": 4609,
+      "historico": [
+        {
+          "tentativa": 1,
+          "agente": "sub-10",
+          "modelo": "haiku",
+          "inicio": "2026-10-08T15:43:29-03:00",
+          "fim": "2026-10-08T15:43:31-03:00",
+          "resultado": "reprovada",
+          "motivo": "PDF saiu em formato Carta, não A4",
+          "tokens": 13922,
+          "tool_uses": 4,
+          "duracao_ms": 1721,
+          "juiz": null,
+          "resumo": null
+        },
+        {
+          "tentativa": 2,
+          "agente": "sub-13",
+          "modelo": "haiku",
+          "inicio": "2026-10-08T15:43:31-03:00",
+          "fim": "2026-10-08T15:43:34-03:00",
+          "resultado": "reprovada",
+          "motivo": "sangria ausente na segunda tentativa",
+          "tokens": 9953,
+          "tool_uses": 6,
+          "duracao_ms": 2888,
+          "juiz": null,
+          "resumo": null
+        }
+      ]
+    },
+    {
+      "id": "entregar",
+      "nome": "Empacotar e entregar",
+      "descricao": "Juntar os três formatos num zip com um LEIA-ME que informa a validade das ofertas e onde usar cada arquivo.",
+      "entradas": [
+        "saida/feed/",
+        "saida/stories/",
+        "saida/impressao/"
+      ],
+      "saidas": [
+        "saida/entrega/encarte-semana.zip",
+        "saida/entrega/LEIA-ME.md"
+      ],
+      "depende_de": [
+        "render-feed",
+        "render-stories",
+        "render-a4"
+      ],
+      "escreve": [
+        "saida/entrega/encarte-semana.zip",
+        "saida/entrega/LEIA-ME.md"
+      ],
+      "le": [
+        "saida/feed/",
+        "saida/stories/",
+        "saida/impressao/",
+        "saida/ofertas.json"
+      ],
+      "criterio_pronto": "o zip contém os três formatos e o LEIA-ME informa a validade das ofertas",
+      "verificacao": {
+        "tipo": "comando",
+        "comando": "python3 -c \"import zipfile;n=zipfile.ZipFile('saida/entrega/encarte-semana.zip').namelist();assert any(x.endswith('.pdf') for x in n) and sum(x.endswith('.png') for x in n)>=2\""
+      },
+      "modelo": "haiku",
+      "estimativa_min": 2,
+      "nivel": 6,
+      "status": "bloqueada",
+      "agente": null,
+      "tentativas": 0,
+      "inicio": null,
+      "fim": null,
+      "resumo_resultado": null,
+      "motivo_reprovacao": null,
+      "arquivos_alterados": [],
+      "tokens": 0,
+      "tool_uses": 0,
+      "duracao_ms": 0,
+      "historico": []
+    }
+  ]
+}
