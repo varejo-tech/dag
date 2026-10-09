@@ -169,9 +169,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-a
 /* ---------- Parte de baixo ---------- */
 .inferior{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(320px,1fr);gap:18px}
 .coluna,.lateral{display:flex;flex-direction:column;min-width:0}
-.lateral .bloco{flex:1}
-.lista-agentes{max-height:660px}
-.lista-eventos{max-height:300px}
+.lateral .bloco{flex:1;display:flex;flex-direction:column}
+.lateral .lista-agentes{flex:1 1 auto;height:0;min-height:260px;max-height:none}
+.coluna .lista-eventos{max-height:300px}
 #gantt{padding:10px 18px 16px}
 #gantt svg{display:block;width:100%;overflow:visible}
 .g-rot{font:400 12px var(--f-text);fill:var(--ink-2)}
@@ -260,6 +260,7 @@ button.pilula:hover{border-color:var(--ink-3)}
   .kpis > *:nth-child(n+5){border-top:1px solid var(--line)}
   .kpis > *:nth-child(5){border-left:0}
   .inferior{grid-template-columns:1fr}
+  .lateral .lista-agentes{height:auto;max-height:660px}
 }
 @media (max-width:640px){
   .topo-in,.pagina{padding-left:16px;padding-right:16px}
